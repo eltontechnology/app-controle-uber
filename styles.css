@@ -1,0 +1,83 @@
+body {
+    background-color: #343a40; /* Cor de fundo escura */
+    color: #ffffff; /* Cor do texto claro */
+}
+h1{
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 2.3rem;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    justify-content: center;
+    text-align: center;
+}
+.table-container {
+    margin-top: 20px;
+}
+.totais {
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
+.valor {
+    font-weight: bold;
+}
+.historico-entrada {
+    background-color: rgba(76, 175, 80, 0.2); /* Verde claro para entrada */
+}
+.historico-saida {
+    background-color: rgba(244, 67, 54, 0.2); /* Vermelho claro para saída */
+}
+#logo{
+    border-radius: 10px;
+    width: 100%;
+    height: auto;
+    max-width: 200px;
+    margin-bottom: 20px;
+    margin-top: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+footer{
+    font-size: 0.8rem;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    margin-top: 20px;
+}
+footer a{
+    font-style: oblique;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    color: rgb(12, 240, 240);
+    text-decoration: none;
+}
+.btn-editar{
+    font-style: oblique;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    background-color: #c9bf06;
+    border: none;
+    margin-bottom: 1.5px;
+    margin-top: 1.5px;
+}
+.btn-excluir{
+    font-style: oblique;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    color: rgb(2, 2, 2);
+    text-decoration: none;
+    background-color: #ff0000;
+    border: none;
+    margin-bottom: 1.5px;
+    margin-top: 1.5px;
+}

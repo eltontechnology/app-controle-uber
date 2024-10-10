@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Caixa</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="favicon_io/favicon.jpg" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon_io/favicon.jpg" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <img id="logo" src="favicon_io/favicon.jpg" alt="logo">
+        <h1>Controle de Caixa</h1>
+        <form id="formulario" class="mt-4">
+            <div class="form-group">
+                <label for="data" class="text-light">Data:</label>
+                <input type="date" id="data" class="form-control" placeholder="Informe a data" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="descricao" class="text-light">Descrição:</label>
+                <input type="text" id="descricao" class="form-control" placeholder="ex: Gasolina" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="valor" class="text-light">Valor:</label>
+                <input type="number" id="valor" class="form-control" placeholder="ex: 100,00" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="text-light">Tipo:</label><br>
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="entrada" name="tipo" value="entrada" class="form-check-input" checked>
+                    <label for="entrada" class="form-check-label text-light">Entrada</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="saida" name="tipo" value="saida" class="form-check-input">
+                    <label for="saida" class="form-check-label text-light">Saída</label>
+                </div>
+            </div>
+            
+            <button type="button" id="adicionar" class="btn btn-primary">Adicionar</button>
+        </form>
+        
+        <h2 id="mes-atual" class="text-center mt-4 text-light"></h2>
+        <div class="navegacao-meses text-center">
+            <button id="mes-anterior" class="btn btn-secondary">←</button>
+            <button id="mes-proximo" class="btn btn-secondary">→</button>
+        </div>
+
+        <div id="historicos-meses" class="mt-4">
+            <!-- Os históricos dos meses serão exibidos aqui -->
+        </div>
+        <footer>
+            <p>Desenvolvido por <a href="https://github.com/eltontechnology" target="_blank"><span id="link-rodape" >Elton Technology</span></a></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
