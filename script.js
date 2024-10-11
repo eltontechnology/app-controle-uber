@@ -38,14 +38,16 @@ function adicionarTransacao() {
     const dataTransacao = document.getElementById('data').value;
     const descricao = document.getElementById('descricao').value.trim();
     const valor = parseFloat(document.getElementById('valor').value);
-    const tipo = document.querySelector('input[name="tipo"]:checked').value;
+    const tipo = document.querySelector('input[name="tipo"]:checked').value; // Obtém o valor do rádio selecionado
 
     if (!dataTransacao || !descricao || isNaN(valor) || valor <= 0) {
         alert('Por favor, preencha todos os campos corretamente.');
         return;
     }
 
-    const dataFormatada = new Date(dataTransacao.split('/').reverse().join('/')); // Converter para YYYY-MM-DD
+    // Converter a data do formato DD/MM/YYYY para YYYY-MM-DD para criar o objeto Date corretamente
+    const partesData = dataTransacao.split('/');
+    const dataFormatada = new Date(partesData[2], partesData[1] - 1, partesData[0]);
 
     const transacao = {
         data: dataFormatada.toLocaleDateString('pt-BR'),
@@ -93,6 +95,7 @@ function exibirTransacoes() {
 
 function criarTabela(transacoesFiltradas) {
     const tabela = document.createElement('div');
+    tabela.classList.add('table-responsive'); // Adiciona classe de responsividade do Bootstrap
     tabela.classList.add('table-container');
     tabela.innerHTML = `
         <table class="table table-dark table-hover">
@@ -180,7 +183,7 @@ function limparCampos() {
     $('.datepicker').datepicker('update', '');
     document.getElementById('descricao').value = '';
     document.getElementById('valor').value = '';
-    document.querySelector('input[name="tipo"][value="entrada"]').checked = true; // Seleciona entrada por padrão
+    document.getElementById('entrada').checked = true; // Resetando para 'Entrada'
 }
 
 function salvarTransacoes() {
