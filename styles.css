@@ -149,6 +149,15 @@ footer p{
 span{
     color: #46c415;
 }
+input[type=number]::-webkit-inner-spin-button { 
+    -webkit-appearance: none;
+    
+}
+input[type=number] { 
+   -moz-appearance: textfield;
+   appearance: textfield;
+
+}
 
 /* Responsividade */
 @media (max-width: 768px) {
