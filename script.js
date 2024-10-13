@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('adicionar').addEventListener('click', adicionarTransacao);
     document.getElementById('mes-anterior').addEventListener('click', () => mudarMes(-1));
     document.getElementById('mes-proximo').addEventListener('click', () => mudarMes(1));
+    document.getElementById('exportar-csv').addEventListener('click', exportarParaCSV);
 });
 
 function inicializarDatepicker() {
@@ -111,11 +112,11 @@ function criarTabela(transacoesFiltradas) {
             <tbody>
                 ${transacoesFiltradas.map((transacao, index) => `
                     <tr class="${transacao.tipo === 'entrada' ? 'historico-entrada' : 'historico-saida'}">
-                        <td>${transacao.data}</td>
-                        <td>${transacao.descricao}</td>
-                        <td>R$ ${transacao.valor.toFixed(2)}</td>
-                        <td>${transacao.tipo.charAt(0).toUpperCase() + transacao.tipo.slice(1)}</td>
-                        <td>
+                        <td data-label="Data">${transacao.data}</td>
+                        <td data-label="Descrição">${transacao.descricao}</td>
+                        <td data-label="Valor">R$ ${transacao.valor.toFixed(2)}</td>
+                        <td data-label="Tipo">${transacao.tipo.charAt(0).toUpperCase() + transacao.tipo.slice(1)}</td>
+                        <td data-label="Ações">
                             <button class="btn btn-warning btn-sm mr-2" onclick="editarTransacao(${index})">Editar</button>
                             <button class="btn btn-danger btn-sm" onclick="confirmarExcluirTransacao(${index})">Excluir</button>
                         </td>
@@ -166,8 +167,8 @@ function atualizarTotais(transacoesFiltradas) {
     const totaisDiv = document.createElement('div');
     totaisDiv.classList.add('totais');
     totaisDiv.innerHTML = `
-        <h3>Entradas: <span class="valor total-entrada">R$ ${totalEntradas.toFixed(2)}</span></h3>
-        <h3>Saídas: <span class="valor total-saida">R$ ${totalSaidas.toFixed(2)}</span></h3>
+        <h3>Total de Entradas: <span class="valor total-entrada">R$ ${totalEntradas.toFixed(2)}</span></h3>
+        <h3>Total de Saídas: <span class="valor total-saida">R$ ${totalSaidas.toFixed(2)}</span></h3>
         <h3>Saldo: <span class="valor saldo" style="color: ${saldo >= 0 ? '#00FFFF' : 'red'};">R$ ${saldo.toFixed(2)}</span></h3>
     `;
 
@@ -195,4 +196,33 @@ function carregarTransacoes() {
     if (transacoesSalvas) {
         transacoes = transacoesSalvas;
     }
+}
+
+function exportarParaCSV() {
+    if (transacoes.length === 0) {
+        alert('Nenhuma transação para exportar.');
+        return;
+    }
+
+    const headers = ['Data', 'Descrição', 'Valor', 'Tipo', 'Mês', 'Ano'];
+    const rows = transacoes.map(transacao => [
+        transacao.data,
+        transacao.descricao,
+        transacao.valor.toFixed(2),
+        transacao.tipo,
+        obterNomeMes(transacao.mes),
+        transacao.ano
+    ]);
+
+    let csvContent = 'data:text/csv;charset=utf-8,' 
+        + headers.join(',') + '\n'
+        + rows.map(e => e.join(',')).join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'transacoes.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
