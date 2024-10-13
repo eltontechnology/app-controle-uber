@@ -117,8 +117,8 @@ function criarTabela(transacoesFiltradas) {
                         <td data-label="Valor">R$ ${transacao.valor.toFixed(2)}</td>
                         <td data-label="Tipo">${transacao.tipo.charAt(0).toUpperCase() + transacao.tipo.slice(1)}</td>
                         <td data-label="Ações">
-                            <button class="btn btn-warning btn-sm mr-2" onclick="editarTransacao(${index})">Editar</button>
-                            <button class="btn btn-danger btn-sm" onclick="confirmarExcluirTransacao(${index})">Excluir</button>
+                            <button class="btn btn-warning btn-sm mr-2" onclick="editarTransacao(${index})">✏️Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="confirmarExcluirTransacao(${index})">🗑️Excluir</button>
                         </td>
                     </tr>
                 `).join('')}
@@ -167,9 +167,9 @@ function atualizarTotais(transacoesFiltradas) {
     const totaisDiv = document.createElement('div');
     totaisDiv.classList.add('totais');
     totaisDiv.innerHTML = `
-        <h3>Total de Entradas: <span class="valor total-entrada">R$ ${totalEntradas.toFixed(2)}</span></h3>
-        <h3>Total de Saídas: <span class="valor total-saida">R$ ${totalSaidas.toFixed(2)}</span></h3>
-        <h3>Saldo: <span class="valor saldo" style="color: ${saldo >= 0 ? '#00FFFF' : 'red'};">R$ ${saldo.toFixed(2)}</span></h3>
+        <h3>📈 Entradas: <span class="valor total-entrada">R$ ${totalEntradas.toFixed(2)}</span></h3>
+        <h3>📉 Saídas: <span class="valor total-saida">R$ ${totalSaidas.toFixed(2)}</span></h3>
+        <h3>📊 Saldo: <span class="valor saldo" style="color: ${saldo >= 0 ? '#00FFFF'  : 'red'};">R$ ${saldo.toFixed(2)}</span></h3>
     `;
 
     const container = document.querySelector('.table-container');
@@ -226,3 +226,12 @@ function exportarParaCSV() {
     link.click();
     document.body.removeChild(link);
 }
+
+document.addEventListener("keypress", function(e){
+    
+    if(e.key === "Enter"){
+        const btn = document.querySelector("#adicionar");
+        btn.click(); 
+        location.reload();
+    }
+});
