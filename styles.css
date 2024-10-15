@@ -4,6 +4,9 @@ body {
     background-color: #121212;
     color: #ffffff;
 }
+h2{
+    font-size: 5vh;
+}
 
 /* Ajuste no Formulário */
 form#formulario {
