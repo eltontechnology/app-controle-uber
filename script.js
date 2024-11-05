@@ -39,14 +39,13 @@ function adicionarTransacao() {
     const dataTransacao = document.getElementById('data').value;
     const descricao = document.getElementById('descricao').value.trim();
     const valor = parseFloat(document.getElementById('valor').value);
-    const tipo = document.querySelector('input[name="tipo"]:checked').value; // Obtém o valor do rádio selecionado
+    const tipo = document.querySelector('input[name="tipo"]:checked').value;
 
     if (!dataTransacao || !descricao || isNaN(valor) || valor <= 0) {
         alert('Por favor, preencha todos os campos corretamente.');
         return;
     }
 
-    // Converter a data do formato DD/MM/YYYY para YYYY-MM-DD para criar o objeto Date corretamente
     const partesData = dataTransacao.split('/');
     const dataFormatada = new Date(partesData[2], partesData[1] - 1, partesData[0]);
 
@@ -80,7 +79,7 @@ function mudarMes(direcao) {
 
 function exibirTransacoes() {
     const historicosMeses = document.getElementById('historicos-meses');
-    historicosMeses.innerHTML = ''; // Limpa o conteúdo anterior
+    historicosMeses.innerHTML = '';
 
     const transacoesFiltradas = transacoes.filter(transacao => transacao.mes === mesAtual && transacao.ano === anoAtual);
 
@@ -96,7 +95,7 @@ function exibirTransacoes() {
 
 function criarTabela(transacoesFiltradas) {
     const tabela = document.createElement('div');
-    tabela.classList.add('table-responsive'); // Adiciona classe de responsividade do Bootstrap
+    tabela.classList.add('table-responsive');
     tabela.classList.add('table-container');
     tabela.innerHTML = `
         <table class="table table-dark table-hover">
@@ -130,15 +129,13 @@ function criarTabela(transacoesFiltradas) {
 
 function editarTransacao(index) {
     const transacao = transacoes[index];
-    const dataFormatada = new Date(transacao.data.split('/').reverse().join('/')); // Converter para YYYY-MM-DD
+    const dataFormatada = new Date(transacao.data.split('/').reverse().join('/'));
 
-    // Preencher os campos do formulário com os dados da transação
     $('.datepicker').datepicker('update', dataFormatada);
     document.getElementById('descricao').value = transacao.descricao;
     document.getElementById('valor').value = transacao.valor;
     document.querySelector(`input[name="tipo"][value="${transacao.tipo}"]`).checked = true;
 
-    // Remove a transação atual antes de editar
     excluirTransacao(index);
 }
 
@@ -169,9 +166,9 @@ function atualizarTotais(transacoesFiltradas) {
     totaisDiv.innerHTML = `
         <h3>📈 Entradas: <span class="valor total-entrada">R$ ${totalEntradas.toFixed(2)}</span></h3>
         <h3>📉 Saídas: <span class="valor total-saida">R$ ${totalSaidas.toFixed(2)}</span></h3>
-        <h3>📊 Saldo: <span class="valor saldo" style="color: ${saldo >= 0 ? '#00FFFF'  : 'red'};">R$ ${saldo.toFixed(2)}</span></h3>
+        <h3>📊 Saldo: <span class="valor saldo" style="color: ${saldo >= 0 ? '#00FFFF' : 'red'};">R$ ${saldo.toFixed(2)}</span></h3>
     `;
-    
+
     const container = document.querySelector('.table-container');
     container.appendChild(totaisDiv);
 }
@@ -184,17 +181,29 @@ function limparCampos() {
     $('.datepicker').datepicker('update', '');
     document.getElementById('descricao').value = '';
     document.getElementById('valor').value = '';
-    document.getElementById('entrada').checked = true; // Resetando para 'Entrada'
+    document.getElementById('entrada').checked = true;
+}
+
+function setCookie(name, value, days) {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+}
+
+function getCookie(name) {
+    return document.cookie.split('; ').reduce((prev, current) => {
+        const [key, value] = current.split('=');
+        return key === name ? decodeURIComponent(value) : prev;
+    }, '');
 }
 
 function salvarTransacoes() {
-    localStorage.setItem('transacoes', JSON.stringify(transacoes));
+    setCookie('transacoes', JSON.stringify(transacoes), 7); // Expira em 7 dias
 }
 
 function carregarTransacoes() {
-    const transacoesSalvas = JSON.parse(localStorage.getItem('transacoes'));
+    const transacoesSalvas = getCookie('transacoes');
     if (transacoesSalvas) {
-        transacoes = transacoesSalvas;
+        transacoes = JSON.parse(transacoesSalvas);
     }
 }
 
@@ -214,7 +223,7 @@ function exportarParaCSV() {
         transacao.ano
     ]);
 
-    let csvContent = 'data:text/csv;charset=utf-8,' 
+    let csvContent = 'data:text/csv;charset=utf-8,'
         + headers.join(',') + '\n'
         + rows.map(e => e.join(',')).join('\n');
 
@@ -227,9 +236,8 @@ function exportarParaCSV() {
     document.body.removeChild(link);
 }
 
-document.addEventListener("keypress", function(e){
-    
-    if(e.key === "Enter"){
+document.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
         const btn = document.querySelector("#adicionar");
         btn.click(); 
         location.reload();
