@@ -103,18 +103,17 @@ form#formulario .form-check-label {
 }
 
 /* Totais */
-#totais {
+.totais {
     margin-top: 20px;
-    margin-bottom: 20px;
     padding: 15px;
     background-color: #1e1e1e;
     border-radius: 5px;
-    text-align: left;
+    text-align: justify;
 }
 
-#totais h3 {
+.totais h3 {
     margin: 10px 0;
-    font-size: 1.2rem; /* Tamanho menor para totais */
+    font-size: 1rem; /* Tamanho menor para totais */
 }
 
 .valor {
