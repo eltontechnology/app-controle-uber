@@ -181,29 +181,24 @@ function limparCampos() {
     $('.datepicker').datepicker('update', '');
     document.getElementById('descricao').value = '';
     document.getElementById('valor').value = '';
-    document.getElementById('entrada').checked = true;
+    document.getElementById('entrada').checked = true; 
 }
 
-function setCookie(name, value, days) {
-    const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
-}
-
-function getCookie(name) {
-    return document.cookie.split('; ').reduce((prev, current) => {
-        const [key, value] = current.split('=');
-        return key === name ? decodeURIComponent(value) : prev;
-    }, '');
-}
-
+// Função para salvar as transações nos cookies
 function salvarTransacoes() {
-    setCookie('transacoes', JSON.stringify(transacoes), 7); // Expira em 7 dias
+    const cookieValue = JSON.stringify(transacoes);
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 30); // 30 dias de expiração
+    document.cookie = `transacoes=${encodeURIComponent(cookieValue)}; expires=${expirationDate.toUTCString()}; path=/`;
 }
 
+// Função para carregar as transações dos cookies
 function carregarTransacoes() {
-    const transacoesSalvas = getCookie('transacoes');
-    if (transacoesSalvas) {
-        transacoes = JSON.parse(transacoesSalvas);
+    const cookies = document.cookie.split('; ');
+    const transacoesCookie = cookies.find(cookie => cookie.startsWith('transacoes='));
+    if (transacoesCookie) {
+        const valor = decodeURIComponent(transacoesCookie.split('=')[1]);
+        transacoes = JSON.parse(valor);
     }
 }
 
@@ -223,7 +218,7 @@ function exportarParaCSV() {
         transacao.ano
     ]);
 
-    let csvContent = 'data:text/csv;charset=utf-8,'
+    let csvContent = 'data:text/csv;charset=utf-8,' 
         + headers.join(',') + '\n'
         + rows.map(e => e.join(',')).join('\n');
 
@@ -236,8 +231,8 @@ function exportarParaCSV() {
     document.body.removeChild(link);
 }
 
-document.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
+document.addEventListener("keypress", function(e){
+    if(e.key === "Enter"){
         const btn = document.querySelector("#adicionar");
         btn.click(); 
         location.reload();
