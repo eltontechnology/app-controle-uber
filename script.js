@@ -1,10 +1,32 @@
 let transacoes = [];
 let mesAtual = new Date().getMonth();
 let anoAtual = new Date().getFullYear();
+let db;
+
+// Abre o banco de dados
+function abrirBancoDeDados() {
+    const request = indexedDB.open('transacoesDB', 1);
+
+    request.onupgradeneeded = function(event) {
+        db = event.target.result;
+        const objectStore = db.createObjectStore('transacoes', { keyPath: 'id', autoIncrement: true });
+        objectStore.createIndex('mes', 'mes');
+        objectStore.createIndex('ano', 'ano');
+    };
+
+    request.onsuccess = function(event) {
+        db = event.target.result;
+        carregarTransacoes(); // Carrega transações ao abrir o banco
+    };
+
+    request.onerror = function(event) {
+        console.error('Erro ao abrir o banco de dados:', event);
+    };
+}
 
 document.addEventListener('DOMContentLoaded', () => {
+    abrirBancoDeDados(); // Chama a função para abrir o banco de dados
     inicializarDatepicker();
-    carregarTransacoes();
     atualizarTituloMes();
     exibirTransacoes();
 
@@ -166,7 +188,7 @@ function atualizarTotais(transacoesFiltradas) {
     totaisDiv.innerHTML = `
         <h3>📈 Entradas: <span class="valor total-entrada">R$ ${totalEntradas.toFixed(2)}</span></h3>
         <h3>📉 Saídas: <span class="valor total-saida">R$ ${totalSaidas.toFixed(2)}</span></h3>
-        <h3>📊 Saldo: <span class="valor saldo" style="color: ${saldo >= 0 ? '#00FFFF' : 'red'};">R$ ${saldo.toFixed(2)}</span></h3>
+        <h3>📊 Saldo: <span class="valor saldo" style="color: ${saldo >= 0 ? '#00FFFF'  : 'red'};">R$ ${saldo.toFixed(2)}</span></h3>
     `;
 
     const container = document.querySelector('.table-container');
@@ -181,60 +203,57 @@ function limparCampos() {
     $('.datepicker').datepicker('update', '');
     document.getElementById('descricao').value = '';
     document.getElementById('valor').value = '';
-    document.getElementById('entrada').checked = true; 
+    document.getElementById('entrada').checked = true; // Resetando para 'Entrada'
 }
 
-// Função para salvar as transações nos cookies
 function salvarTransacoes() {
-    const cookieValue = JSON.stringify(transacoes);
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 30); // 30 dias de expiração
-    document.cookie = `transacoes=${encodeURIComponent(cookieValue)}; expires=${expirationDate.toUTCString()}; path=/`;
+    const transaction = db.transaction(['transacoes'], 'readwrite');
+    const objectStore = transaction.objectStore('transacoes');
+
+    // Remove todas as transações existentes antes de salvar as novas
+    objectStore.clear();
+
+    transacoes.forEach(transacao => {
+        objectStore.add(transacao);
+    });
+
+    transaction.oncomplete = function() {
+        console.log('Transações salvas com sucesso.');
+    };
+
+    transaction.onerror = function(event) {
+        console.error('Erro ao salvar transações:', event);
+    };
 }
 
-// Função para carregar as transações dos cookies
 function carregarTransacoes() {
-    const cookies = document.cookie.split('; ');
-    const transacoesCookie = cookies.find(cookie => cookie.startsWith('transacoes='));
-    if (transacoesCookie) {
-        const valor = decodeURIComponent(transacoesCookie.split('=')[1]);
-        transacoes = JSON.parse(valor);
-    }
+    const transaction = db.transaction(['transacoes'], 'readonly');
+    const objectStore = transaction.objectStore('transacoes');
+    const request = objectStore.getAll();
+
+    request.onsuccess = function(event) {
+        transacoes = event.target.result;
+        exibirTransacoes(); // Exibe as transações após carregá-las
+    };
+
+    request.onerror = function(event) {
+        console.error('Erro ao carregar transações:', event);
+    };
 }
 
 function exportarParaCSV() {
-    if (transacoes.length === 0) {
-        alert('Nenhuma transação para exportar.');
-        return;
-    }
+    const transacoesFiltradas = transacoes.filter(transacao => transacao.mes === mesAtual && transacao.ano === anoAtual);
+    let csv = 'Data,Descrição,Valor,Tipo\n';
+    transacoesFiltradas.forEach(transacao => {
+        csv += `${transacao.data},${transacao.descricao},${transacao.valor},${transacao.tipo}\n`;
+    });
 
-    const headers = ['Data', 'Descrição', 'Valor', 'Tipo', 'Mês', 'Ano'];
-    const rows = transacoes.map(transacao => [
-        transacao.data,
-        transacao.descricao,
-        transacao.valor.toFixed(2),
-        transacao.tipo,
-        obterNomeMes(transacao.mes),
-        transacao.ano
-    ]);
-
-    let csvContent = 'data:text/csv;charset=utf-8,' 
-        + headers.join(',') + '\n'
-        + rows.map(e => e.join(',')).join('\n');
-
-    const encodedUri = encodeURI(csvContent);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'transacoes.csv');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `transacoes_${obterNomeMes(mesAtual)}_${anoAtual}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
-
-document.addEventListener("keypress", function(e){
-    if(e.key === "Enter"){
-        const btn = document.querySelector("#adicionar");
-        btn.click(); 
-        location.reload();
-    }
-});
