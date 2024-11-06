@@ -31,6 +31,7 @@ form#formulario .form-check-label {
 
 /* Botões */
 .btn-primary {
+    font-size: 1.3rem;
     background-color: #28a745;
     border: none;
 }
@@ -40,6 +41,7 @@ form#formulario .form-check-label {
 }
 
 .btn-secondary {
+    font-size: 1.3rem;
     background-color: #6c757d;
     border: none;
 }
@@ -73,6 +75,10 @@ form#formulario .form-check-label {
 
 .btn-info:hover {
     background-color: #138496;
+}
+
+.mb-2{
+    font-size: 1.3rem;
 }
 
 /* Tabela Responsiva */
@@ -114,6 +120,10 @@ form#formulario .form-check-label {
 .totais h3 {
     margin: 10px 0;
     font-size: 1rem; /* Tamanho menor para totais */
+}
+
+.total-geral{
+    margin-bottom: 25px;
 }
 
 .valor {

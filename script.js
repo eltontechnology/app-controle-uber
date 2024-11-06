@@ -133,11 +133,11 @@ function criarTabela(transacoesFiltradas) {
             <tbody>
                 ${transacoesFiltradas.map((transacao, index) => `
                     <tr class="${transacao.tipo === 'entrada' ? 'historico-entrada' : 'historico-saida'}">
-                        <td data-label="Data">${transacao.data}</td>
-                        <td data-label="Descrição">${transacao.descricao}</td>
-                        <td data-label="Valor">R$ ${transacao.valor.toFixed(2)}</td>
-                        <td data-label="Tipo">${transacao.tipo.charAt(0).toUpperCase() + transacao.tipo.slice(1)}</td>
-                        <td data-label="Ações">
+                        <td data-label="📅 Data">${transacao.data}</td>
+                        <td data-label="📝 Descrição">${transacao.descricao}</td>
+                        <td data-label="💲 Valor">R$ ${transacao.valor.toFixed(2)}</td>
+                        <td data-label="💱 Tipo">${transacao.tipo.charAt(0).toUpperCase() + transacao.tipo.slice(1)}</td>
+                        <td data-label="👉 Ações">
                             <button class="btn btn-warning btn-sm mr-2" onclick="editarTransacao(${index})">✏️Editar</button>
                             <button class="btn btn-danger btn-sm" onclick="confirmarExcluirTransacao(${index})">🗑️Excluir</button>
                         </td>
